@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Video Loader</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            background: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden;
+            transition: background 2s ease-in-out;
+        }
+        video {
+            display: none;
+            width: 100vw;
+            height: 100vh;
+            object-fit: cover;
+        }
+        .thank-you {
+            display: none;
+            color: white;
+            font-size: 2rem;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+    </style>
+</head>
+<body>
+    <video id="video" preload="auto" playsinline>
+        <source src="do.webm" type="video/webm">
+    </video>
+    <div class="thank-you">Thank You</div>
+    
+    <script>
+        const video = document.getElementById("video");
+        const body = document.body;
+        const thankYou = document.querySelector(".thank-you");
+
+        video.onprogress = function () {
+            if (video.buffered.length > 0) {
+                let bufferedEnd = video.buffered.end(0);
+                let duration = video.duration;
+                if (bufferedEnd / duration >= 0.5) {
+                    body.style.background = "black";
+                    setTimeout(() => {
+                        video.style.display = "block";
+                        video.requestFullscreen().catch(err => console.log(err));
+                        video.play();
+                    }, 2000);
+                }
+            }
+        };
+
+        video.onended = function () {
+            video.style.display = "none";
+            thankYou.style.display = "block";
+        };
+    </script>
+</body>
+</html>
